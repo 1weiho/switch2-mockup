@@ -4,6 +4,7 @@ import { useState, useRef, useEffect, useCallback } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Download } from 'lucide-react';
+import ImageCropDialog from './image-crop-dialog';
 
 // Switch frame's actual dimensions
 const SWITCH_WIDTH = 1920;
@@ -11,15 +12,16 @@ const SWITCH_HEIGHT = 1080;
 
 // Switch screen's relative position and size (adjusted based on the original image)
 const SCREEN = {
-  x: 460,
-  y: 270,
-  width: 1000,
-  height: 560,
+  x: 320,
+  y: 210,
+  width: 1280,
+  height: 660,
 };
 
 export default function SwitchMock() {
   const [userImage, setUserImage] = useState<string | null>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const [openImageCropDialog, setOpenImageCropDialog] = useState(false);
 
   const drawSwitchFrame = useCallback(() => {
     const canvas = canvasRef.current;
@@ -52,10 +54,14 @@ export default function SwitchMock() {
       reader.onload = (e) => {
         const dataUrl = e.target?.result as string;
         setUserImage(dataUrl);
-        drawImage(dataUrl);
+        setOpenImageCropDialog(true);
       };
       reader.readAsDataURL(file);
     }
+  };
+
+  const handleCropComplete = (imageDataUrl: string) => {
+    drawImage(imageDataUrl);
   };
 
   const drawImage = useCallback(
@@ -133,6 +139,12 @@ export default function SwitchMock() {
             <Download className="mr-2 h-4 w-4" />
             Download
           </Button>
+          <ImageCropDialog
+            open={openImageCropDialog}
+            onOpenChange={setOpenImageCropDialog}
+            imageUrl={userImage ?? ''}
+            handleCropComplete={handleCropComplete}
+          />
         </div>
       </div>
     </div>
