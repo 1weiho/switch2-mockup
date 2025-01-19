@@ -123,8 +123,14 @@ export default function SwitchMock() {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen p-4">
-      <div className="w-full max-w-4xl space-y-4">
+    <>
+      <ImageCropDialog
+        open={openImageCropDialog}
+        onOpenChange={setOpenImageCropDialog}
+        imageUrl={userImage ?? ''}
+        handleCropComplete={handleCropComplete}
+      />
+      <div className="w-full max-w-4xl space-y-4 mx-auto mt-4">
         <div className="relative w-full bg-black rounded-2xl overflow-hidden">
           <canvas
             ref={canvasRef}
@@ -151,14 +157,8 @@ export default function SwitchMock() {
             <Download className="mr-2 h-4 w-4" />
             Download
           </Button>
-          <ImageCropDialog
-            open={openImageCropDialog}
-            onOpenChange={setOpenImageCropDialog}
-            imageUrl={userImage ?? ''}
-            handleCropComplete={handleCropComplete}
-          />
         </div>
       </div>
-    </div>
+    </>
   );
 }
