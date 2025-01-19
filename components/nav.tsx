@@ -1,5 +1,5 @@
-import { BatteryFull, Wifi } from 'lucide-react';
-import Image from 'next/image';
+import { BatteryFull, Wifi } from 'lucide-react'
+import Image from 'next/image'
 
 export default function Nav() {
   return (
@@ -21,5 +21,5 @@ export default function Nav() {
         <BatteryFull className="h-7 w-7" />
       </div>
     </nav>
-  );
+  )
 }

@@ -1,33 +1,33 @@
-'use client';
+'use client'
 
+import { Button } from './ui/button'
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
-} from '@/components/ui/dialog';
-import { useRef, useState } from 'react';
+} from '@/components/ui/dialog'
+import { useRef, useState } from 'react'
 import ReactCrop, {
   centerCrop,
   makeAspectCrop,
   type Crop,
-} from 'react-image-crop';
-import 'react-image-crop/dist/ReactCrop.css';
-import { Button } from './ui/button';
+} from 'react-image-crop'
+import 'react-image-crop/dist/ReactCrop.css'
 
 interface ImageCropDialogProps {
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
-  imageUrl: string;
-  handleCropComplete: (imageDataUrl: string) => void;
+  open: boolean
+  onOpenChange: (open: boolean) => void
+  imageUrl: string
+  handleCropComplete: (imageDataUrl: string) => void
 }
 
-const aspectRatio = 2046 / 1166;
+const aspectRatio = 2046 / 1166
 
 const centerAspectCrop = (
   mediaWidth: number,
   mediaHeight: number,
-  aspect: number
+  aspect: number,
 ) => {
   return centerCrop(
     makeAspectCrop(
@@ -37,12 +37,12 @@ const centerAspectCrop = (
       },
       aspect,
       mediaWidth,
-      mediaHeight
+      mediaHeight,
     ),
     mediaWidth,
-    mediaHeight
-  );
-};
+    mediaHeight,
+  )
+}
 
 export default function ImageCropDialog({
   open,
@@ -50,28 +50,28 @@ export default function ImageCropDialog({
   imageUrl,
   handleCropComplete,
 }: ImageCropDialogProps) {
-  const [crop, setCrop] = useState<Crop>();
-  const [completedCrop, setCompletedCrop] = useState<Crop>();
+  const [crop, setCrop] = useState<Crop>()
+  const [completedCrop, setCompletedCrop] = useState<Crop>()
 
-  const imgRef = useRef<HTMLImageElement>(null);
+  const imgRef = useRef<HTMLImageElement>(null)
 
   const cropComplete = async () => {
-    const image = imgRef.current;
+    const image = imgRef.current
     if (!image || !completedCrop) {
-      throw new Error('Crop canvas does not exist');
+      throw new Error('Crop canvas does not exist')
     }
 
-    const scaleX = image.naturalWidth / image.width;
-    const scaleY = image.naturalHeight / image.height;
+    const scaleX = image.naturalWidth / image.width
+    const scaleY = image.naturalHeight / image.height
 
     const offscreen = new OffscreenCanvas(
       completedCrop.width * scaleX,
-      completedCrop.height * scaleY
-    );
+      completedCrop.height * scaleY,
+    )
 
-    const ctx = offscreen.getContext('2d');
+    const ctx = offscreen.getContext('2d')
     if (!ctx) {
-      throw new Error('No 2d context');
+      throw new Error('No 2d context')
     }
 
     ctx.drawImage(
@@ -83,19 +83,19 @@ export default function ImageCropDialog({
       0,
       0,
       offscreen.width,
-      offscreen.height
-    );
+      offscreen.height,
+    )
 
-    const blob = await offscreen.convertToBlob({ type: 'image/png' });
-    handleCropComplete(URL.createObjectURL(blob));
+    const blob = await offscreen.convertToBlob({ type: 'image/png' })
+    handleCropComplete(URL.createObjectURL(blob))
 
-    onOpenChange(false);
-  };
+    onOpenChange(false)
+  }
 
   const onImageLoad = (e: React.SyntheticEvent<HTMLImageElement>) => {
-    const { width, height } = e.currentTarget;
-    setCrop(centerAspectCrop(width, height, aspectRatio));
-  };
+    const { width, height } = e.currentTarget
+    setCrop(centerAspectCrop(width, height, aspectRatio))
+  }
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -116,5 +116,5 @@ export default function ImageCropDialog({
         <Button onClick={cropComplete}>Crop</Button>
       </DialogContent>
     </Dialog>
-  );
+  )
 }
