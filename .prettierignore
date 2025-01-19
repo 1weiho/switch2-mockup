@@ -1,0 +1,10 @@
+# Ignore artifacts:
+build
+coverage
+
+pnpm-lock.yaml
+node_modules
+
+# shadcn/ui
+components/ui
+components.json
