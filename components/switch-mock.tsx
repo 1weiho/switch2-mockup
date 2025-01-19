@@ -32,6 +32,18 @@ export default function SwitchMock() {
     canvas.width = SWITCH_WIDTH;
     canvas.height = SWITCH_HEIGHT;
 
+    // background gradient
+    const gradient = ctx.createLinearGradient(
+      0,
+      0,
+      SWITCH_WIDTH,
+      SWITCH_HEIGHT
+    );
+    gradient.addColorStop(0, '#7dd3fc'); // Sky-300
+    gradient.addColorStop(1, '#fda4af'); // Rose-300
+    ctx.fillStyle = gradient;
+    ctx.fillRect(0, 0, SWITCH_WIDTH, SWITCH_HEIGHT);
+
     // Load Switch frame image
     const switchImage = new Image();
     switchImage.crossOrigin = 'anonymous';
@@ -113,10 +125,10 @@ export default function SwitchMock() {
   return (
     <div className="flex flex-col items-center justify-center min-h-screen p-4">
       <div className="w-full max-w-4xl space-y-4">
-        <div className="relative w-full bg-black rounded-lg overflow-hidden">
+        <div className="relative w-full bg-black rounded-2xl overflow-hidden">
           <canvas
             ref={canvasRef}
-            className="w-full h-full object-contain bg-gradient-to-br from-sky-200 to-rose-100"
+            className="w-full h-full object-contain"
             style={{
               aspectRatio: `${SWITCH_WIDTH}/${SWITCH_HEIGHT}`,
             }}
