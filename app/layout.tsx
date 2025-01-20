@@ -1,4 +1,5 @@
 import './globals.css'
+import Footer from '@/components/footer'
 import Nav from '@/components/nav'
 import { TooltipProvider } from '@/components/ui/tooltip'
 import type { Metadata } from 'next'
@@ -32,6 +33,7 @@ export default function RootLayout({
         <TooltipProvider delayDuration={300}>
           <Nav />
           {children}
+          <Footer />
         </TooltipProvider>
       </body>
     </html>

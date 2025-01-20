@@ -9,7 +9,7 @@ import Image from 'next/image'
 
 export default function Nav() {
   return (
-    <nav className="flex p-16 justify-between">
+    <nav className="flex p-16 pb-12 justify-between">
       <Tooltip>
         <TooltipTrigger>
           <a href="https://1wei.dev/" target="_blank">

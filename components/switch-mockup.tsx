@@ -134,7 +134,7 @@ export default function SwitchMockup() {
         imageUrl={userImage ?? ''}
         handleCropComplete={handleCropComplete}
       />
-      <div className="w-full max-w-4xl mx-auto mt-4">
+      <div className="w-full max-w-4xl mx-auto">
         <h1 className="text-2xl text-teal-400">Switch 2 Mock</h1>
 
         <div className="relative w-full rounded-lg overflow-hidden border-teal-400 border-[3px] p-1 mt-2">
