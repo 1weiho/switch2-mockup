@@ -135,7 +135,7 @@ export default function SwitchMockup() {
         handleCropComplete={handleCropComplete}
       />
       <div className="w-full max-w-4xl px-6 mx-auto mt-20 lg:mt-0">
-        <h1 className="text-2xl text-teal-400">Switch 2 Mockup</h1>
+        <h1 className="text-xl lg:text-2xl text-teal-400">Switch 2 Mockup</h1>
 
         <div className="relative w-full rounded-lg overflow-hidden border-teal-400 border-[3px] p-1 mt-2">
           <canvas
