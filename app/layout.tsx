@@ -2,6 +2,7 @@ import './globals.css'
 import Footer from '@/components/footer'
 import Nav from '@/components/nav'
 import { TooltipProvider } from '@/components/ui/tooltip'
+import { Analytics } from '@vercel/analytics/next'
 import type { Metadata } from 'next'
 import { Geist, Geist_Mono } from 'next/font/google'
 
@@ -55,6 +56,7 @@ export default function RootLayout({
           <main className="flex-1">{children}</main>
           <Footer />
         </TooltipProvider>
+        <Analytics />
       </body>
     </html>
   )
