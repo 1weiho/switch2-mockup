@@ -6,8 +6,17 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog'
+import {
+  Drawer,
+  DrawerContent,
+  DrawerDescription,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerTitle,
+} from '@/components/ui/drawer'
 import { Label } from '@/components/ui/label'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
+import { useMediaQuery } from '@/hooks/use-media-query'
 import { useState } from 'react'
 
 const gradients = [
@@ -31,6 +40,7 @@ export default function BackgroundSelectionDialog({
   const [selectedBackground, setSelectedBackground] = useState<string | null>(
     null,
   )
+  const isDesktop = useMediaQuery('(min-width: 768px)')
 
   const handleSelectBackground = () => {
     if (selectedBackground === 'transparent') {
@@ -44,16 +54,63 @@ export default function BackgroundSelectionDialog({
     onOpenChange(false)
   }
 
+  if (isDesktop) {
+    return (
+      <Dialog open={open} onOpenChange={onOpenChange}>
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle>Select Background</DialogTitle>
+            <DialogDescription>
+              Choose a background color for the canvas.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="grid gap-4 py-4">
+            <RadioGroup
+              onValueChange={setSelectedBackground}
+              defaultValue={selectedBackground || gradients[0].name}
+            >
+              {gradients.map((gradient) => (
+                <div
+                  key={gradient.name}
+                  className="flex items-center space-x-2"
+                >
+                  <RadioGroupItem value={gradient.name} id={gradient.name} />
+                  <Label
+                    htmlFor={gradient.name}
+                    className="flex items-center gap-2 justify-between w-full"
+                  >
+                    {gradient.name}
+                    <div
+                      className="w-8 h-8 rounded"
+                      style={{
+                        background: `linear-gradient(to right, ${gradient.from}, ${gradient.to})`,
+                      }}
+                    />
+                  </Label>
+                </div>
+              ))}
+              <div className="flex items-center space-x-2 py-2">
+                <RadioGroupItem value="transparent" id="transparent" />
+                <Label htmlFor="transparent">Transparent</Label>
+              </div>
+            </RadioGroup>
+          </div>
+          <Button onClick={handleSelectBackground}>Apply Background</Button>
+        </DialogContent>
+      </Dialog>
+    )
+  }
+
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[425px]">
-        <DialogHeader>
-          <DialogTitle>Select Background</DialogTitle>
-          <DialogDescription>
+    <Drawer open={open} onOpenChange={onOpenChange}>
+      <DrawerContent>
+        <DrawerHeader>
+          <DrawerTitle>Select Background</DrawerTitle>
+          <DrawerDescription>
             Choose a background color for the canvas.
-          </DialogDescription>
-        </DialogHeader>
-        <div className="grid gap-4 py-4">
+          </DrawerDescription>
+        </DrawerHeader>
+        <div className="grid gap-4 m-6">
           <RadioGroup
             onValueChange={setSelectedBackground}
             defaultValue={selectedBackground || gradients[0].name}
@@ -81,8 +138,11 @@ export default function BackgroundSelectionDialog({
             </div>
           </RadioGroup>
         </div>
-        <Button onClick={handleSelectBackground}>Apply Background</Button>
-      </DialogContent>
-    </Dialog>
+
+        <DrawerFooter className="pt-2">
+          <Button onClick={handleSelectBackground}>Apply Background</Button>
+        </DrawerFooter>
+      </DrawerContent>
+    </Drawer>
   )
 }
