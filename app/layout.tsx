@@ -1,5 +1,6 @@
 import './globals.css'
 import Nav from '@/components/nav'
+import { TooltipProvider } from '@/components/ui/tooltip'
 import type { Metadata } from 'next'
 import { Geist, Geist_Mono } from 'next/font/google'
 
@@ -28,8 +29,10 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased bg-stone-100 font-[family-name:var(--font-geist-mono)]`}
       >
-        <Nav />
-        {children}
+        <TooltipProvider delayDuration={300}>
+          <Nav />
+          {children}
+        </TooltipProvider>
       </body>
     </html>
   )
