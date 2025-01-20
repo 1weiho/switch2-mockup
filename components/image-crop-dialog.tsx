@@ -4,6 +4,7 @@ import { Button } from './ui/button'
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog'
@@ -102,6 +103,9 @@ export default function ImageCropDialog({
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Crop Image</DialogTitle>
+          <DialogDescription>
+            Select a range to crop the photo.
+          </DialogDescription>
         </DialogHeader>
 
         <ReactCrop
