@@ -22,7 +22,7 @@ const SCREEN = {
   height: 660,
 }
 
-export default function SwitchMock() {
+export default function SwitchMockup() {
   const [userImage, setUserImage] = useState<string | null>(null)
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)

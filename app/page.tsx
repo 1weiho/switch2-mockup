@@ -1,5 +1,5 @@
-import SwitchMock from '@/components/switch-mock'
+import SwitchMockup from '@/components/switch-mockup'
 
 export default function Home() {
-  return <SwitchMock />
+  return <SwitchMockup />
 }
