@@ -1,5 +1,6 @@
 'use client'
 
+import BackgroundSelectionDialog from './background-selection-dialog'
 import ImageCropDialog from './image-crop-dialog'
 import { Button } from '@/components/ui/button'
 import {
@@ -7,7 +8,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from '@/components/ui/tooltip'
-import { Download, Image as ImageIcon } from 'lucide-react'
+import { Download, ImageIcon, Palette } from 'lucide-react'
 import { useState, useRef, useEffect, useCallback } from 'react'
 
 // Switch frame's actual dimensions
@@ -27,6 +28,14 @@ export default function SwitchMockup() {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
   const [openImageCropDialog, setOpenImageCropDialog] = useState(false)
+  const [openBackgroundDialog, setOpenBackgroundDialog] = useState(false)
+  const [background, setBackground] = useState<{
+    from: string
+    to: string
+  } | null>({
+    from: '#7dd3fc',
+    to: '#fda4af',
+  })
 
   const drawSwitchFrame = useCallback(() => {
     const canvas = canvasRef.current
@@ -37,12 +46,22 @@ export default function SwitchMockup() {
     canvas.width = SWITCH_WIDTH
     canvas.height = SWITCH_HEIGHT
 
-    // background gradient
-    const gradient = ctx.createLinearGradient(0, 0, SWITCH_WIDTH, SWITCH_HEIGHT)
-    gradient.addColorStop(0, '#7dd3fc') // Sky-300
-    gradient.addColorStop(1, '#fda4af') // Rose-300
-    ctx.fillStyle = gradient
-    ctx.fillRect(0, 0, SWITCH_WIDTH, SWITCH_HEIGHT)
+    if (background) {
+      // background gradient
+      const gradient = ctx.createLinearGradient(
+        0,
+        0,
+        SWITCH_WIDTH,
+        SWITCH_HEIGHT,
+      )
+      gradient.addColorStop(0, background.from)
+      gradient.addColorStop(1, background.to)
+      ctx.fillStyle = gradient
+      ctx.fillRect(0, 0, SWITCH_WIDTH, SWITCH_HEIGHT)
+    } else {
+      // Clear the canvas for transparent background
+      ctx.clearRect(0, 0, SWITCH_WIDTH, SWITCH_HEIGHT)
+    }
 
     // Load Switch frame image
     const switchImage = new Image()
@@ -53,7 +72,7 @@ export default function SwitchMockup() {
       // Draw Switch frame
       ctx.drawImage(switchImage, 0, 0, SWITCH_WIDTH, SWITCH_HEIGHT)
     }
-  }, [])
+  }, [background])
 
   useEffect(() => {
     drawSwitchFrame()
@@ -126,6 +145,16 @@ export default function SwitchMockup() {
     fileInputRef.current?.click()
   }
 
+  const handleBackgroundSelection = (
+    newBackground: { from: string; to: string } | null,
+  ) => {
+    setBackground(newBackground)
+    drawSwitchFrame()
+    if (userImage) {
+      drawImage(userImage)
+    }
+  }
+
   return (
     <>
       <ImageCropDialog
@@ -133,6 +162,11 @@ export default function SwitchMockup() {
         onOpenChange={setOpenImageCropDialog}
         imageUrl={userImage ?? ''}
         handleCropComplete={handleCropComplete}
+      />
+      <BackgroundSelectionDialog
+        open={openBackgroundDialog}
+        onOpenChange={setOpenBackgroundDialog}
+        onSelectBackground={handleBackgroundSelection}
       />
       <div className="w-full max-w-4xl px-6 mx-auto mt-20 lg:mt-0">
         <h1 className="text-xl lg:text-2xl text-teal-400">Switch 2 Mockup</h1>
@@ -169,6 +203,21 @@ export default function SwitchMockup() {
             </TooltipTrigger>
             <TooltipContent>
               <p>Upload image</p>
+            </TooltipContent>
+          </Tooltip>
+
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                onClick={() => setOpenBackgroundDialog(true)}
+                variant="ghost"
+                className="h-16 w-16 rounded-full shadow-sm bg-white text-green-500 [&_svg]:size-8 hover:text-green-500"
+              >
+                <Palette />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>Change background</p>
             </TooltipContent>
           </Tooltip>
 
