@@ -2,8 +2,12 @@
 
 import ImageCropDialog from './image-crop-dialog'
 import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Download } from 'lucide-react'
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from '@/components/ui/tooltip'
+import { Download, Image as ImageIcon } from 'lucide-react'
 import { useState, useRef, useEffect, useCallback } from 'react'
 
 // Switch frame's actual dimensions
@@ -21,6 +25,7 @@ const SCREEN = {
 export default function SwitchMock() {
   const [userImage, setUserImage] = useState<string | null>(null)
   const canvasRef = useRef<HTMLCanvasElement>(null)
+  const fileInputRef = useRef<HTMLInputElement>(null)
   const [openImageCropDialog, setOpenImageCropDialog] = useState(false)
 
   const drawSwitchFrame = useCallback(() => {
@@ -117,6 +122,10 @@ export default function SwitchMock() {
     link.click()
   }
 
+  const handleUploadButtonClick = () => {
+    fileInputRef.current?.click()
+  }
+
   return (
     <>
       <ImageCropDialog
@@ -125,33 +134,59 @@ export default function SwitchMock() {
         imageUrl={userImage ?? ''}
         handleCropComplete={handleCropComplete}
       />
-      <div className="w-full max-w-4xl space-y-4 mx-auto mt-4">
-        <div className="relative w-full bg-black rounded-2xl overflow-hidden">
+      <div className="w-full max-w-4xl mx-auto mt-4">
+        <h1 className="text-2xl text-teal-400">Switch 2 Mock</h1>
+
+        <div className="relative w-full rounded-lg overflow-hidden border-teal-400 border-[3px] p-1 mt-2">
           <canvas
             ref={canvasRef}
-            className="w-full h-full object-contain"
+            className="w-full h-full object-contain rounded-lg"
             style={{
               aspectRatio: `${SWITCH_WIDTH}/${SWITCH_HEIGHT}`,
             }}
           />
         </div>
 
-        <div className="flex space-x-4">
-          <Input
-            id="image-upload"
+        <div className="flex space-x-8 justify-center mt-12">
+          <input
+            ref={fileInputRef}
             type="file"
             accept="image/*"
             onChange={handleImageUpload}
-            className="cursor-pointer"
+            className="hidden"
+            aria-hidden="true"
           />
-          <Button
-            onClick={handleDownload}
-            disabled={!userImage}
-            className="w-full"
-          >
-            <Download className="mr-2 h-4 w-4" />
-            Download
-          </Button>
+
+          <Tooltip>
+            <TooltipTrigger>
+              <Button
+                onClick={handleUploadButtonClick}
+                variant="ghost"
+                className="h-16 w-16 rounded-full shadow-sm bg-white text-red-500 [&_svg]:size-8 hover:text-red-500"
+              >
+                <ImageIcon />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>Upload image</p>
+            </TooltipContent>
+          </Tooltip>
+
+          <Tooltip>
+            <TooltipTrigger>
+              <Button
+                onClick={handleDownload}
+                disabled={!userImage}
+                variant="ghost"
+                className="h-16 w-16 rounded-full shadow-sm bg-white text-blue-500 [&_svg]:size-8 hover:text-blue-500"
+              >
+                <Download className="h-4 w-4" />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>Download mockup</p>
+            </TooltipContent>
+          </Tooltip>
         </div>
       </div>
     </>

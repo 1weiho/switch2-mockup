@@ -27,7 +27,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-stone-100 font-[family-name:var(--font-geist-mono)]`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-stone-200 font-[family-name:var(--font-geist-mono)]`}
       >
         <TooltipProvider delayDuration={300}>
           <Nav />
