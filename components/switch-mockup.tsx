@@ -158,7 +158,7 @@ export default function SwitchMockup() {
           />
 
           <Tooltip>
-            <TooltipTrigger>
+            <TooltipTrigger asChild>
               <Button
                 onClick={handleUploadButtonClick}
                 variant="ghost"
@@ -173,7 +173,7 @@ export default function SwitchMockup() {
           </Tooltip>
 
           <Tooltip>
-            <TooltipTrigger>
+            <TooltipTrigger asChild>
               <Button
                 onClick={handleDownload}
                 disabled={!userImage}
