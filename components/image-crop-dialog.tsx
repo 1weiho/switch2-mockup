@@ -8,7 +8,16 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog'
-import { useRef, useState } from 'react'
+import {
+  Drawer,
+  DrawerContent,
+  DrawerDescription,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerTitle,
+} from '@/components/ui/drawer'
+import { useMediaQuery } from '@/hooks/use-media-query'
+import { useCallback, useRef, useState } from 'react'
 import ReactCrop, {
   centerCrop,
   makeAspectCrop,
@@ -53,8 +62,10 @@ export default function ImageCropDialog({
 }: ImageCropDialogProps) {
   const [crop, setCrop] = useState<Crop>()
   const [completedCrop, setCompletedCrop] = useState<Crop>()
+  const isDesktop = useMediaQuery('(min-width: 768px)')
 
   const imgRef = useRef<HTMLImageElement>(null)
+  const cropContainerRef = useRef<HTMLDivElement>(null)
 
   const cropComplete = async () => {
     const image = imgRef.current
@@ -98,27 +109,83 @@ export default function ImageCropDialog({
     setCrop(centerAspectCrop(width, height, aspectRatio))
   }
 
+  const preventTouchMove = useCallback((e: TouchEvent) => {
+    e.preventDefault()
+  }, [])
+
+  const addTouchMoveListener = useCallback(() => {
+    const container = cropContainerRef.current
+    if (container) {
+      container.addEventListener('touchmove', preventTouchMove, {
+        passive: false,
+      })
+    }
+  }, [preventTouchMove])
+
+  const removeTouchMoveListener = useCallback(() => {
+    const container = cropContainerRef.current
+    if (container) {
+      container.removeEventListener('touchmove', preventTouchMove)
+    }
+  }, [preventTouchMove])
+
+  if (isDesktop) {
+    return (
+      <Dialog open={open} onOpenChange={onOpenChange}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Crop Image</DialogTitle>
+            <DialogDescription>
+              Select a range to crop the photo.
+            </DialogDescription>
+          </DialogHeader>
+
+          <ReactCrop
+            crop={crop}
+            onChange={(c) => setCrop(c)}
+            onComplete={(c) => setCompletedCrop(c)}
+            aspect={aspectRatio}
+          >
+            <img src={imageUrl} ref={imgRef} onLoad={onImageLoad} />
+          </ReactCrop>
+
+          <Button onClick={cropComplete}>Crop</Button>
+        </DialogContent>
+      </Dialog>
+    )
+  }
+
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle>Crop Image</DialogTitle>
-          <DialogDescription>
+    <Drawer open={open} onOpenChange={onOpenChange}>
+      <DrawerContent>
+        <DrawerHeader>
+          <DrawerTitle>Crop Image</DrawerTitle>
+          <DrawerDescription>
             Select a range to crop the photo.
-          </DialogDescription>
-        </DialogHeader>
+          </DrawerDescription>
+        </DrawerHeader>
 
-        <ReactCrop
-          crop={crop}
-          onChange={(c) => setCrop(c)}
-          onComplete={(c) => setCompletedCrop(c)}
-          aspect={aspectRatio}
+        <div
+          ref={cropContainerRef}
+          className="m-2"
+          onTouchStart={addTouchMoveListener}
+          onTouchEnd={removeTouchMoveListener}
         >
-          <img src={imageUrl} ref={imgRef} onLoad={onImageLoad} />
-        </ReactCrop>
+          <ReactCrop
+            crop={crop}
+            onChange={(c) => setCrop(c)}
+            onComplete={(c) => setCompletedCrop(c)}
+            aspect={aspectRatio}
+            className="m-2"
+          >
+            <img src={imageUrl} ref={imgRef} onLoad={onImageLoad} />
+          </ReactCrop>
+        </div>
 
-        <Button onClick={cropComplete}>Crop</Button>
-      </DialogContent>
-    </Dialog>
+        <DrawerFooter className="pt-2">
+          <Button onClick={cropComplete}>Crop</Button>
+        </DrawerFooter>
+      </DrawerContent>
+    </Drawer>
   )
 }
