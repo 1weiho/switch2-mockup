@@ -9,7 +9,7 @@ import Image from 'next/image'
 
 export default function Nav() {
   return (
-    <nav className="flex p-16 pb-12 justify-between">
+    <nav className="flex p-8 lg:p-16 pb-12 justify-between">
       <Tooltip>
         <TooltipTrigger>
           <a href="https://1wei.dev/" target="_blank">
@@ -18,7 +18,7 @@ export default function Nav() {
               height={200}
               width={200}
               alt="Yiwei Ho Avatar"
-              className="h-14 w-14 rounded-full border-2 border-white shadow"
+              className="size-12 lg:size-14 rounded-full border-2 border-white shadow"
             />
           </a>
         </TooltipTrigger>
@@ -27,10 +27,10 @@ export default function Nav() {
         </TooltipContent>
       </Tooltip>
 
-      <div className="flex items-center space-x-8">
+      <div className="flex items-center lg:space-x-8 space-x-6">
         <DynamicTime />
-        <Wifi className="h-7 w-7" />
-        <BatteryFull className="h-7 w-7" />
+        <Wifi className="lg:size-7 size-5" />
+        <BatteryFull className="lg:size-7 size-5" />
       </div>
     </nav>
   )

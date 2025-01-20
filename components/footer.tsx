@@ -3,7 +3,7 @@ import { Github, X } from 'lucide-react'
 
 export default function Footer() {
   return (
-    <div className="w-[96%] mx-auto mt-24">
+    <div className="w-[96%] mx-auto pb-6">
       <Separator className="bg-black " />
       <div className="flex justify-end space-x-12 px-8 mt-4">
         <a

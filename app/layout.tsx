@@ -28,11 +28,11 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-stone-200 font-[family-name:var(--font-geist-mono)]`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-stone-200 font-[family-name:var(--font-geist-mono)] min-h-screen flex flex-col`}
       >
         <TooltipProvider delayDuration={300}>
           <Nav />
-          {children}
+          <main className="flex-1">{children}</main>
           <Footer />
         </TooltipProvider>
       </body>

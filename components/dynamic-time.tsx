@@ -18,7 +18,7 @@ export default function DynamicTime() {
 
   return (
     <div className="flex items-end space-x-1">
-      <p className="text-2xl">{`${formattedHours}:${formattedMinutes}`}</p>
+      <p className="text-xl lg:text-2xl">{`${formattedHours}:${formattedMinutes}`}</p>
       <p className="text-sm">{ampm}</p>
     </div>
   )
