@@ -37,46 +37,80 @@ export default function SwitchMockup() {
     to: '#fda4af',
   })
 
-  const drawSwitchFrame = useCallback(() => {
+  const drawImage = useCallback((imageUrl: string) => {
     const canvas = canvasRef.current
     const ctx = canvas?.getContext('2d')
     if (!canvas || !ctx) return
 
-    // Set Canvas to Switch's full dimensions
-    canvas.width = SWITCH_WIDTH
-    canvas.height = SWITCH_HEIGHT
+    // Load user image
+    const userImg = new Image()
+    userImg.crossOrigin = 'anonymous'
+    userImg.src = imageUrl
 
-    if (background) {
-      // background gradient
-      const gradient = ctx.createLinearGradient(
-        0,
-        0,
-        SWITCH_WIDTH,
-        SWITCH_HEIGHT,
+    userImg.onload = () => {
+      // Calculate user image's scale ratio
+      const scale = Math.min(
+        SCREEN.width / userImg.width,
+        SCREEN.height / userImg.height,
       )
-      gradient.addColorStop(0, background.from)
-      gradient.addColorStop(1, background.to)
-      ctx.fillStyle = gradient
-      ctx.fillRect(0, 0, SWITCH_WIDTH, SWITCH_HEIGHT)
-    } else {
-      // Clear the canvas for transparent background
-      ctx.clearRect(0, 0, SWITCH_WIDTH, SWITCH_HEIGHT)
+
+      // Calculate scaled dimensions
+      const scaledWidth = userImg.width * scale
+      const scaledHeight = userImg.height * scale
+
+      // Calculate centered position
+      const x = SCREEN.x + (SCREEN.width - scaledWidth) / 2
+      const y = SCREEN.y + (SCREEN.height - scaledHeight) / 2
+
+      // Draw user image
+      ctx.drawImage(userImg, x, y, scaledWidth, scaledHeight)
     }
+  }, [])
 
-    // Load Switch frame image
-    const switchImage = new Image()
-    switchImage.crossOrigin = 'anonymous'
-    switchImage.src = '/assets/switch2-mock.png'
+  const drawSwitchFrame = useCallback(
+    (userImageUrl?: string) => {
+      const canvas = canvasRef.current
+      const ctx = canvas?.getContext('2d')
+      if (!canvas || !ctx) return
 
-    switchImage.onload = () => {
-      // Draw Switch frame
-      ctx.drawImage(switchImage, 0, 0, SWITCH_WIDTH, SWITCH_HEIGHT)
-    }
-  }, [background])
+      // Set Canvas to Switch's full dimensions
+      canvas.width = SWITCH_WIDTH
+      canvas.height = SWITCH_HEIGHT
 
-  useEffect(() => {
-    drawSwitchFrame()
-  }, [drawSwitchFrame])
+      if (background) {
+        // background gradient
+        const gradient = ctx.createLinearGradient(
+          0,
+          0,
+          SWITCH_WIDTH,
+          SWITCH_HEIGHT,
+        )
+        gradient.addColorStop(0, background.from)
+        gradient.addColorStop(1, background.to)
+        ctx.fillStyle = gradient
+        ctx.fillRect(0, 0, SWITCH_WIDTH, SWITCH_HEIGHT)
+      } else {
+        // Clear the canvas for transparent background
+        ctx.clearRect(0, 0, SWITCH_WIDTH, SWITCH_HEIGHT)
+      }
+
+      // Load Switch frame image
+      const switchImage = new Image()
+      switchImage.crossOrigin = 'anonymous'
+      switchImage.src = '/assets/switch2-mock.png'
+
+      switchImage.onload = () => {
+        // Draw Switch frame
+        ctx.drawImage(switchImage, 0, 0, SWITCH_WIDTH, SWITCH_HEIGHT)
+
+        // Draw user image if available
+        if (userImageUrl) {
+          drawImage(userImageUrl)
+        }
+      }
+    },
+    [background, drawImage],
+  )
 
   const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0]
@@ -92,44 +126,9 @@ export default function SwitchMockup() {
   }
 
   const handleCropComplete = (imageDataUrl: string) => {
-    drawImage(imageDataUrl)
+    setUserImage(imageDataUrl)
+    drawSwitchFrame(imageDataUrl)
   }
-
-  const drawImage = useCallback(
-    (imageUrl: string) => {
-      const canvas = canvasRef.current
-      const ctx = canvas?.getContext('2d')
-      if (!canvas || !ctx) return
-
-      // Load user image
-      const userImg = new Image()
-      userImg.crossOrigin = 'anonymous'
-      userImg.src = imageUrl
-
-      userImg.onload = () => {
-        // Redraw Switch frame
-        drawSwitchFrame()
-
-        // Calculate user image's scale ratio
-        const scale = Math.min(
-          SCREEN.width / userImg.width,
-          SCREEN.height / userImg.height,
-        )
-
-        // Calculate scaled dimensions
-        const scaledWidth = userImg.width * scale
-        const scaledHeight = userImg.height * scale
-
-        // Calculate centered position
-        const x = SCREEN.x + (SCREEN.width - scaledWidth) / 2
-        const y = SCREEN.y + (SCREEN.height - scaledHeight) / 2
-
-        // Draw user image
-        ctx.drawImage(userImg, x, y, scaledWidth, scaledHeight)
-      }
-    },
-    [drawSwitchFrame],
-  )
 
   const handleDownload = () => {
     const canvas = canvasRef.current
@@ -149,11 +148,12 @@ export default function SwitchMockup() {
     newBackground: { from: string; to: string } | null,
   ) => {
     setBackground(newBackground)
-    drawSwitchFrame()
-    if (userImage) {
-      drawImage(userImage)
-    }
+    drawSwitchFrame(userImage || undefined)
   }
+
+  useEffect(() => {
+    drawSwitchFrame(userImage || undefined)
+  }, [drawSwitchFrame, userImage, background])
 
   return (
     <>
